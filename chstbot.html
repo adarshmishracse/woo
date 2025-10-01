@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Festival Chatbot</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="flex items-center justify-center min-h-screen bg-[url('/LoginPage.png')] bg-no-repeat bg-center bg-cover">
+  
+
+  <div class="w-96 h-[520px] bg-white rounded-2xl shadow-xl flex flex-col overflow-hidden z-10 bg-[url('/chat-bg.jpg')] border border-gray-300">
+           <p class=" justify-center items-center text-center bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500">Welcome To Chatbot
+            (Make wish for the festival)
+           </p>
+    <div id="chatBox" class="flex-1 p-4 overflow-y-auto space-y-3"></div>
+
+    <div class="p-3 border-t bg-gray-50 flex space-x-2">
+      <input id="userInput" type="text" placeholder="Type a festival name..."
+        class="flex-1 px-3 py-2 text-sm border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+      <button onclick="sendMessage('text')"
+        class="px-4 py-2 bg-blue-600 text-white text-sm rounded-lg hover:bg-blue-700">Text Wish</button>
+      <button onclick="sendMessage('image')"
+        class="px-4 py-2 bg-green-600 text-white text-sm rounded-lg hover:bg-green-700">Image Wish</button>
+    </div>
+  </div>
+
+  <script>
+    const chatBox = document.getElementById("chatBox");
+    const userInput = document.getElementById("userInput");
+
+    const wishes = {
+      diwali: {
+        text: "✨ Happy Diwali! May your life be filled with lights and joy.",
+        img: "https://i.imgur.com/B0y3l2Z.png"
+      },
+      holi: {
+        text: "🌈 Happy Holi! Wishing you colors of happiness and love.",
+        img: "https://i.imgur.com/qL2GyO7.png"
+      },
+      eid: {
+        text: "🕌 Eid Mubarak! May peace and blessings be with you.",
+        img: "https://i.imgur.com/vNBMnQX.png"
+      },
+      christmas: {
+        text: "🎄 Merry Christmas! May your days be filled with joy.",
+        img: "https://i.imgur.com/rwAfOaC.png"
+      },
+      newyear: {
+        text: "🎉 Happy New Year! Wishing you success and happiness ahead.",
+        img: "https://i.imgur.com/fJ7pJdl.png"
+      }
+    };
+
+    function sendMessage(type) {
+      const message = userInput.value.trim();
+      if (!message) return;
+
+      appendMessage(message, "user");
+
+      const reply = getFestivalWish(message, type);
+      setTimeout(() => appendMessage(reply, "bot", type), 600);
+
+      userInput.value = "";
+    }
+
+    function appendMessage(content, sender, type = "text") {
+      const wrapper = document.createElement("div");
+      wrapper.classList.add("max-w-[80%]", "px-3", "py-2", "rounded-lg", "text-sm");
+
+      if (sender === "user") {
+        wrapper.classList.add("bg-blue-600", "text-white", "ml-auto");
+        wrapper.innerText = content;
+      } else {
+        wrapper.classList.add("bg-gray-200", "text-gray-800", "mr-auto");
+        if (typeof content === "object" && type === "image") {
+          wrapper.innerHTML = `
+            <div>${content.text}</div>
+            <img src="${content.img}" alt="Festival Image" class="mt-2 rounded-lg w-48">`;
+        } else {
+          wrapper.innerText = typeof content === "object" ? content.text : content;
+        }
+      }
+
+      chatBox.appendChild(wrapper);
+      chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    function getFestivalWish(festival, type) {
+      const key = festival.toLowerCase();
+      if (!wishes[key]) {
+        return "🤖 Sorry, currently we are facing some technical issue";
+      }
+      return wishes[key];
+    }
+  </script>
+
+</body>
+</html>
